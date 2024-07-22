@@ -1,0 +1,42 @@
+num_epochs = 5
+for epoch in range(num_epochs):
+    for i, (images, _) in enumerate(dataloader):
+        # Create labels
+        real_labels = torch.ones(images.size(0), 1)
+        fake_labels = torch.zeros(images.size(0), 1)
+
+        # Train Discriminator
+        outputs = discriminator(images)
+        d_loss_real = criterion(outputs, real_labels)
+        real_score = outputs
+
+        noise = torch.randn(images.size(0), 100)
+        fake_images = generator(noise)
+        outputs = discriminator(fake_images.detach())
+        d_loss_fake = criterion(outputs, fake_labels)
+        fake_score = outputs
+
+        d_loss = d_loss_real + d_loss_fake
+        optimizer_d.zero_grad()
+        d_loss.backward()
+        optimizer_d.step()
+
+        # Train Generator
+        outputs = discriminator(fake_images)
+        g_loss = criterion(outputs, real_labels)
+
+        optimizer_g.zero_grad()
+        g_loss.backward()
+        optimizer_g.step()
+
+    print(f'Epoch [{epoch+1}/{num_epochs}], d_loss: {d_loss.item()}, g_loss: {g_loss.item()}')
+
+    # Save generated images
+    if (epoch+1) % 5 == 0:
+        with torch.no_grad():
+            fixed_noise = torch.randn(64, 100)
+            generated_images = generator(fixed_noise).cpu().detach()
+            grid = torchvision.utils.make_grid(generated_images, nrow=8, normalize=True)
+            plt.imshow(grid.permute(1, 2, 0))
+            plt.title(f'Epoch {epoch+1}')
+            plt.show()
