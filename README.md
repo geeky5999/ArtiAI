@@ -1,1 +1,2 @@
 # ArtiAI
+ArtifAI is an innovative project that leverages the power of Generative Adversarial Networks (GANs) to create advanced image generation tools tailored for the creative industries. The primary objective of ArtifAI is to develop a sophisticated AI-based system that can generate high-quality, realistic images and artwork, catering to various applications such as digital art, graphic design, advertising, and entertainment.
